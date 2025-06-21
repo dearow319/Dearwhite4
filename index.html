@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>기록 문서: ███</title>
+  <title>오스월드 화이트의 관찰 기록지</title>
   <style>
     body {
       background: black;
@@ -51,117 +51,104 @@
       width: 100%;
       font-family: inherit;
     }
+    .section {
+      margin-top: 2rem;
+      cursor: pointer;
+      border-left: 2px solid #666;
+      padding-left: 1rem;
+    }
+    .section-content {
+      margin-top: 1rem;
+      padding-left: 1rem;
+      color: #ccc;
+    }
   </style>
 </head>
 <body>
-  <h1>기록 문서: ███ (관찰 전용)</h1>
-  <div id="mainText"></div>
+  <h1>래번클로 기숙사 – 보호 마법 기록지</h1>
+  <div id="mainText">[보호 마법 작동 중... 기록 접근 불가]</div>
   <div id="userInput"></div>
   <div class="choice" id="choices"></div>
+  <div id="sectionContainer"></div>
   <div class="console" id="console"></div>
 
   <script>
     const main = document.getElementById("mainText");
-    const consoleLog = document.getElementById("console");
     const userInput = document.getElementById("userInput");
     const choices = document.getElementById("choices");
+    const consoleLog = document.getElementById("console");
+    const sectionContainer = document.getElementById("sectionContainer");
 
-    let userName = "당신";
+    let userName = "침입자";
 
-    const paragraphs = [
-      "...열람 권한 없음. 접근 거부됨.",
-      "[Override: 감시 대상의 시선 감지됨]",
-      "당신은 지금 '기록 문서: ███'에 접속했습니다.",
-      "그건 아마, 실수였을 겁니다.",
-      "하지만 이제 늦었어요.",
-      "이 문서는 읽히는 것이 아니라, 반응합니다.",
-      "...오스월드 화이트의 개인 기록. 도난 시 반응하도록 설계됨.",
-      "지금 이 순간, 당신의 위치, 환경, 감정은 추론되고 있습니다.",
-      "",
-      "먼저, 당신의 이름을 기록하겠습니다."
-    ];
-
-    function log(text) {
-      const p = document.createElement("p");
-      p.textContent = "console: " + text;
-      consoleLog.appendChild(p);
-    }
-
-    function typeText(textList, i = 0, callback) {
-      if (i >= textList.length) {
-        if (callback) callback();
-        return;
-      }
-      const p = document.createElement("p");
-      let index = 0;
-      function typeChar() {
-        if (index < textList[i].length) {
-          p.innerHTML += textList[i][index++] + '<span class="typing"></span>';
-          setTimeout(typeChar, 40);
-        } else {
-          p.innerHTML = textList[i];
-          setTimeout(() => typeText(textList, i + 1, callback), 1000);
-        }
-      }
-      main.appendChild(p);
-      typeChar();
-    }
+    setTimeout(() => {
+      main.innerText = "마법 보호가 일시적으로 해제되었습니다.\n기록지의 인식이 시작됩니다...";
+      askName();
+    }, 2000);
 
     function askName() {
+      const prompt = document.createElement("div");
+      prompt.innerText = "왜 이 기록지를 훔쳐보려 한 겁니까? 이유와 이름을 말하십시오.";
       const input = document.createElement("input");
-      input.placeholder = "당신의 이름은...";
-      input.onkeydown = (e) => {
-        if (e.key === "Enter" && input.value.trim()) {
+      input.placeholder = "이름을 입력하세요";
+      input.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" && input.value.trim() !== "") {
           userName = input.value.trim();
-          input.remove();
-          log(`${userName}으로 등록되었습니다.`);
-          showChoices();
+          userInput.innerHTML = "";
+          consoleLog.innerText += `\n[기록] 대상명: ${userName}`;
+          showIntro();
         }
-      };
+      });
+      userInput.appendChild(prompt);
       userInput.appendChild(input);
     }
 
-    function showChoices() {
+    function showIntro() {
+      main.innerText = `${userName}, 당신의 시선이 기록지에 남았습니다.\n이제 이 문서는 당신에게 반응합니다.`;
+      choices.innerHTML = "";
       const btn1 = document.createElement("button");
-      btn1.textContent = "▶ 기록을 계속 읽는다";
-      btn1.onclick = () => continueStory("읽기");
-
+      btn1.innerText = "기록을 열람한다";
+      btn1.onclick = showSections;
       const btn2 = document.createElement("button");
-      btn2.textContent = "▼ 닫고 떠난다";
-      btn2.onclick = () => continueStory("떠나기");
-
+      btn2.innerText = "기록지를 닫는다 (비추천)";
+      btn2.onclick = () => {
+        main.innerText = `기록지는 닫히지 않습니다, ${userName}. 이제 늦었습니다.`;
+        consoleLog.innerText += "\n[경고] 이탈 시도 차단됨.";
+      };
       choices.appendChild(btn1);
       choices.appendChild(btn2);
     }
 
-    function continueStory(decision) {
+    function showSections() {
       choices.innerHTML = "";
-      if (decision === "읽기") {
-        const next = [
-          `그렇군요, ${userName}. 용감하군요.`,
-          `하지만 이 선택은... 되돌릴 수 없습니다.`,
-          `기록을 계속하는 동안, 당신은 점점 더 나와 닮아갈 겁니다.`,
-          `처음엔 단순한 문장이었지만, 이제는 속삭임이 됩니다.`,
-          `이 글을 읽는 동안 당신의 사고방식은 이 문서에 동기화됩니다.`,
-          `이미 손가락은 다음 줄을 향하고 있고, 눈은 멈추지 않아요.`,
-          `그런 의미에서... 당신은 나입니다.`
-        ];
-        typeText(next);
-      } else {
-        const escape = [
-          `떠난다, 라고요?`,
-          `이미 당신은 여기에 이름을 남겼습니다.`,
-          `${userName}, 당신은 이 문서의 일부입니다.`,
-          `떠날 수 없어요.`,
-          `왜냐하면—당신이 나를 읽는 순간,`,
-          `나 역시 당신을 읽고 있었으니까.`
-        ];
-        typeText(escape);
-      }
+      main.innerText = "다음 문단 중 열람할 것을 선택하십시오.";
+      const sections = [
+        {
+          title: "[실험 보고서: 정서 추출]",
+          content: `${userName}, 당신은 이 문장을 읽는 동안 놀라지 않았다고 생각하겠지. 하지만 당신의 동공은 수축했고, 호흡도 짧아졌어.\n그 반응을 우리는 정서 유출 반응군 A-17로 분류하고 있다.`
+        },
+        {
+          title: "[오스월드의 관찰 일지]",
+          content: `침입자 ${userName}의 반응 기록됨. 시선 이동 3회. 클릭 지점 예측과 일치. 흥미 있음.\n이전과 달라진 점은 두려움이 아닌 호기심이라는 점이다.`
+        },
+        {
+          title: "[미완성의 장]",
+          content: `...마법 회로 안쪽에 남겨진 글자. \"너는 이미 이 페이지를 본 적이 있지.\"\n기억은 왜곡될 수 있다. 하지만 기록은 왜곡되지 않는다.`
+        },
+      ];
+      sectionContainer.innerHTML = "";
+      sections.forEach(sec => {
+        const div = document.createElement("div");
+        div.className = "section";
+        div.innerText = sec.title;
+        div.onclick = () => {
+          sectionContainer.innerHTML = `<h3>${sec.title}</h3><p class='section-content'>${sec.content}</p>`;
+          consoleLog.innerText += `\n[열람됨] ${sec.title}`;
+        };
+        sectionContainer.appendChild(div);
+      });
     }
-
-    // 시작
-    typeText(paragraphs, 0, askName);
   </script>
 </body>
 </html>
+
