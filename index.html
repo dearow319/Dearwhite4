@@ -1,153 +1,112 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>오스월드 화이트의 관찰 기록지</title>
+  <meta charset="UTF-8" />
+  <title>오스월드 관찰일지</title>
   <style>
     body {
+      margin: 0;
       background: black;
       color: white;
       font-family: 'Courier New', monospace;
-      margin: 0;
+      font-size: 16px;
+      white-space: pre-wrap;
+      overflow: hidden;
       padding: 2rem;
-      line-height: 1.6;
     }
-    .console {
-      border-top: 1px solid #444;
+    .highlight {
+      font-weight: bold;
+    }
+    #console, #final {
+      transition: all 1s;
+    }
+    #final {
       margin-top: 3rem;
-      padding-top: 1rem;
-      font-size: 0.9rem;
-      color: #0f0;
-    }
-    .choice {
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .choice button {
-      background: none;
-      color: white;
-      border: 1px solid white;
-      padding: 0.5rem 1rem;
-      font-family: inherit;
-      cursor: pointer;
-    }
-    .typing {
-      border-right: 1px solid white;
-      animation: blink 0.8s infinite;
-    }
-    @keyframes blink {
-      0% {opacity: 1;}
-      50% {opacity: 0;}
-      100% {opacity: 1;}
-    }
-    input {
-      background: #111;
-      border: 1px solid white;
-      color: white;
-      padding: 0.5rem;
-      margin-top: 2rem;
-      width: 100%;
-      font-family: inherit;
-    }
-    .section {
-      margin-top: 2rem;
-      cursor: pointer;
-      border-left: 2px solid #666;
-      padding-left: 1rem;
-    }
-    .section-content {
-      margin-top: 1rem;
-      padding-left: 1rem;
-      color: #ccc;
+      font-size: 1.8rem;
+      font-weight: bold;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h1>래번클로 기숙사 – 보호 마법 기록지</h1>
-  <div id="mainText">[보호 마법 작동 중... 기록 접근 불가]</div>
-  <div id="userInput"></div>
-  <div class="choice" id="choices"></div>
-  <div id="sectionContainer"></div>
-  <div class="console" id="console"></div>
+  <div id="console"></div>
+  <div id="final"></div>
 
   <script>
-    const main = document.getElementById("mainText");
-    const userInput = document.getElementById("userInput");
-    const choices = document.getElementById("choices");
-    const consoleLog = document.getElementById("console");
-    const sectionContainer = document.getElementById("sectionContainer");
+    const consoleDiv = document.getElementById("console");
+    const finalDiv = document.getElementById("final");
 
-    let userName = "침입자";
+    const part1Title = "[1st] 1991 오스월드 관찰일지\n";
+    const part1 = `• 기록자: 나 
+• 작성일자: 불분명
+(정확히 언제부터 쓰기 시작했는지 기억나지 않는다. 
+다만 오스월드가 우리 기숙사에 들어온 이후였던 건 확실하다.)
+액체가 담긴 병들, 금속관과 유리로 된 도구들, 손때 묻은 고서들이 뒤섞인 종이 다발들과 함께 입실했다. 
+탐구욕이 일면 잠과 끼니도 거르고 무엇 하나에 집착하는 편으로 보인다.
+출처 불명의 각종 알약과 오트밀 비스킷, 견과류 믹스로 식사를 대신한다.
+피곤해보여 커피를 내밀자 단칼에 거절했다.
+역시 그도 이런 음침한 나를 싫어하고 있는 걸까.
 
-    setTimeout(() => {
-      main.innerText = "마법 보호가 일시적으로 해제되었습니다.\n기록지의 인식이 시작됩니다...";
-      askName();
-    }, 2000);
+조수가 되어달라는 요청을 받았다. 
+말을 들어보니, 일종의 모르모트가 되어달라는 소리를 장황하게도 늘어놓았다.
+ …고민 끝에 거절했다.
 
-    function askName() {
-      const prompt = document.createElement("div");
-      prompt.innerText = "왜 이 기록지를 훔쳐보려 한 겁니까? 이유와 이름을 말하십시오.";
-      const input = document.createElement("input");
-      input.placeholder = "이름을 입력하세요";
-      input.addEventListener("keydown", function(e) {
-        if (e.key === "Enter" && input.value.trim() !== "") {
-          userName = input.value.trim();
-          userInput.innerHTML = "";
-          consoleLog.innerText += `\n[기록] 대상명: ${userName}`;
-          showIntro();
-        }
-      });
-      userInput.appendChild(prompt);
-      userInput.appendChild(input);
+나의 이름을 다섯 번이나 틀렸을 때는 언제고,
+실험 대상으로 삼은 학생의 성적은 통계처럼 읊는 모습을 보았다.
+
+기숙사 침대 주변이 늘 난장판이다.
+
+손에 잡히는 대로 메모하고, 종이를 아무렇게나 접어 끼워 넣고, 사용할 도구를 책 위에 올려두며, 필요하면 발로 밀어서 공간을 만든다.
+
+그러나 작성한 실험 기록 하나만큼은 강박적으로 정리되어 있다. 
+각 문서마다 넘버링이 되어 있고, 마지막 페이지에는 그 실험이 끝난 날짜와 실패/성공 여부, 그리고 재실험 필요도가 정확한 수치로 기록되어 있다.
+
+어느날은 관찰 일지를 적는 나를 관찰하는 오스월드를 확인할 수 있었다. 
+그는 자신을 관찰하는 이유를 물어왔다.
+
+자신이 관찰당하고 있다는 것을 언제부터 알고 있었는지는 알 수 없다. 
+하지만 그날 이후 나는 가끔, 방 안에서 우리의 시선이 
+서로를 향해 있는 기묘한 장면을 목격하게 됐다.`;
+
+    const part2 = `...그리고 그럴 때마다 나는 내가 그의 실험 대상 중 하나일지도 모른다는.. 
+그보다 더 나쁜 가능성인
+
+그가 내 데이터를 더 오래 기록해왔을지도 모른다는 가능성에 대해 생각하게 된다…`;
+
+    async function typeText(target, text, delay = 60) {
+      target.innerHTML = '';
+      for (let i = 0; i < text.length; i++) {
+        target.innerHTML += text[i];
+        await new Promise(r => setTimeout(r, delay));
+      }
     }
 
-    function showIntro() {
-      main.innerText = `${userName}, 당신의 시선이 기록지에 남았습니다.\n이제 이 문서는 당신에게 반응합니다.`;
-      choices.innerHTML = "";
-      const btn1 = document.createElement("button");
-      btn1.innerText = "기록을 열람한다";
-      btn1.onclick = showSections;
-      const btn2 = document.createElement("button");
-      btn2.innerText = "기록지를 닫는다 (비추천)";
-      btn2.onclick = () => {
-        main.innerText = `기록지는 닫히지 않습니다, ${userName}. 이제 늦었습니다.`;
-        consoleLog.innerText += "\n[경고] 이탈 시도 차단됨.";
-      };
-      choices.appendChild(btn1);
-      choices.appendChild(btn2);
+    function glitchText(element) {
+      const chars = '!@#$%^&*()_+=-{}[]<>?/|';
+      const original = element.textContent;
+      let glitched = original.split('');
+
+      const glitchInterval = setInterval(() => {
+        const index = Math.floor(Math.random() * glitched.length);
+        glitched[index] = Math.random() > 0.5 ? chars[Math.floor(Math.random() * chars.length)] : '';
+        element.textContent = glitched.join('');
+      }, 100);
+
+      setTimeout(() => {
+        clearInterval(glitchInterval);
+        element.textContent = '';
+        typeText(consoleDiv, part2, 60);
+      }, 3000);
     }
 
-    function showSections() {
-      choices.innerHTML = "";
-      main.innerText = "다음 문단 중 열람할 것을 선택하십시오.";
-      const sections = [
-        {
-          title: "[실험 보고서: 정서 추출]",
-          content: `${userName}, 당신은 이 문장을 읽는 동안 놀라지 않았다고 생각하겠지. 하지만 당신의 동공은 수축했고, 호흡도 짧아졌어.\n그 반응을 우리는 정서 유출 반응군 A-17로 분류하고 있다.`
-        },
-        {
-          title: "[오스월드의 관찰 일지]",
-          content: `침입자 ${userName}의 반응 기록됨. 시선 이동 3회. 클릭 지점 예측과 일치. 흥미 있음.\n이전과 달라진 점은 두려움이 아닌 호기심이라는 점이다.`
-        },
-        {
-          title: "[미완성의 장]",
-          content: `...마법 회로 안쪽에 남겨진 글자. \"너는 이미 이 페이지를 본 적이 있지.\"\n기억은 왜곡될 수 있다. 하지만 기록은 왜곡되지 않는다.`
-        },
-      ];
-      sectionContainer.innerHTML = "";
-      sections.forEach(sec => {
-        const div = document.createElement("div");
-        div.className = "section";
-        div.innerText = sec.title;
-        div.onclick = () => {
-          sectionContainer.innerHTML = `<h3>${sec.title}</h3><p class='section-content'>${sec.content}</p>`;
-          consoleLog.innerText += `\n[열람됨] ${sec.title}`;
-        };
-        sectionContainer.appendChild(div);
-      });
+    async function run() {
+      await new Promise(r => setTimeout(r, 1000));
+      await typeText(consoleDiv, part1Title + part1, 60);
+      await new Promise(r => setTimeout(r, 3000));
+      glitchText(consoleDiv);
     }
+
+    run();
   </script>
 </body>
 </html>
