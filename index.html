@@ -2,133 +2,150 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>기록 문서: ███</title>
+  <title>오스월드 화이트 기록문서</title>
   <style>
     body {
       background: black;
       color: white;
       font-family: 'Courier New', monospace;
-      margin: 0;
       padding: 2rem;
-      line-height: 1.6;
+      line-height: 1.8;
     }
-    .console {
+    #console {
       border-top: 1px solid #444;
       margin-top: 3rem;
       padding-top: 1rem;
       font-size: 0.9rem;
     }
-    #log p {
-      margin: 0.8rem 0;
+    .choice-button {
+      background: #111;
+      color: white;
+      border: 1px solid #444;
+      padding: 0.5rem 1rem;
+      margin: 1rem 0.5rem;
+      cursor: pointer;
+    }
+    .choice-button:hover {
+      background: #222;
     }
     .typing {
       border-right: 1px solid white;
       animation: blink 0.8s infinite;
     }
     @keyframes blink {
-      0% {opacity: 1;}
-      50% {opacity: 0;}
-      100% {opacity: 1;}
-    }
-    input {
-      margin-top: 1rem;
-      padding: 0.4rem;
-      font-family: monospace;
-      background: #111;
-      color: white;
-      border: 1px solid #333;
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <h1>기록 문서: ███ (관찰 전용)</h1>
-  <div id="mainText"></div>
-  <div class="console" id="console"></div>
+  <h1>기록 문서: ███ (기밀)</h1>
+  <div id="log"></div>
+  <div id="main"></div>
+  <div id="console"></div>
 
   <script>
-    const main = document.getElementById("mainText");
-    const consoleLog = document.getElementById("console");
+    const log = document.getElementById("log");
+    const main = document.getElementById("main");
+    const consoleEl = document.getElementById("console");
 
-    const paragraphs = [
-      "열람 권한 없음. 접근 거부됨.",
-      "[Override: 사용자의 접속이 감지되었습니다]",
-      "그 문서, 열면 안 됩니다.",
-      "...이미 열었군요. 감시를 시작합니다.",
-      "당신의 시선, 손의 떨림, 스크롤 속도까지 기록 중...",
-      "이건 단순한 문서가 아닙니다. 오히려 — 거울에 가까워요.",
-      "당신은 나를 보고 있고, 나는 당신을 보고 있습니다.",
-      "왜 이 문서를 훔쳐보려 한 겁니까? 이유를 입력해보세요."
+    const textLines = [
+      "문서 열람 기록 확인됨.",
+      "열람자 ID 추적 실패. 익명 접속으로 간주.",
+      "...허가되지 않은 접근입니다.",
+      "[관측: 감정 반응 미약 / 스크롤 속도 평균 이하]",
+      "문서 내 객체가 자가 활성화됨...",
+      "■ 오스월드의 기록이 응답을 시작합니다."
     ];
 
-    function log(text) {
-      const p = document.createElement("p");
-      p.textContent = "console: " + text;
-      consoleLog.appendChild(p);
-      consoleLog.scrollTop = consoleLog.scrollHeight;
-    }
-
-    function typeText(element, textList, i = 0) {
-      if (i >= textList.length) return;
-      const p = document.createElement("p");
+    function typeLine(text, callback) {
+      let p = document.createElement("p");
       let index = 0;
       function typeChar() {
-        if (index < textList[i].length) {
-          p.innerHTML += textList[i][index++] + '<span class="typing"></span>';
-          setTimeout(typeChar, 35);
+        if (index < text.length) {
+          p.innerHTML = text.slice(0, index++) + '<span class="typing"></span>';
+          setTimeout(typeChar, 40);
         } else {
-          p.innerHTML = textList[i];
-          setTimeout(() => typeText(element, textList, i + 1), 1000);
+          p.innerHTML = text;
+          if (callback) setTimeout(callback, 800);
         }
       }
-      element.appendChild(p);
+      log.appendChild(p);
       typeChar();
     }
 
-    let userName = "";
-
-    setTimeout(() => {
-      const input = document.createElement("input");
-      input.placeholder = "이유를 입력하세요...";
-      input.onkeypress = (e) => {
-        if (e.key === "Enter") {
-          userName = input.value.trim() || "기록 침입자";
-          log(`"${userName}"… 이미 알고 있었습니다.`);
-          main.removeChild(input);
-          continueScript();
+    function startTyping() {
+      let i = 0;
+      function next() {
+        if (i < textLines.length) {
+          typeLine(textLines[i++], next);
+        } else {
+          askName();
         }
-      };
-      main.appendChild(input);
-    }, 13000);
-
-    function continueScript() {
-      setTimeout(() => log(userName + ", 당신은 지금도 읽고 있습니다."), 3000);
-      setTimeout(() => log("지금 멈추면, 이 기록은 당신 안에 남습니다."), 6000);
-      setTimeout(() => log("당신의 반응은 이미 예측되었습니다."), 9000);
-      setTimeout(() => {
-        const end = document.createElement("p");
-        end.innerHTML = `<strong>${userName}</strong>, 이 문서는 이제 당신의 일부입니다.`;
-        main.appendChild(end);
-      }, 12000);
+      }
+      next();
     }
 
-    let lastScroll = 0;
-    let idleTimer;
+    function askName() {
+      const input = document.createElement("input");
+      input.placeholder = "당신의 이름을 입력하세요";
+      input.style.marginTop = "2rem";
+      input.style.padding = "0.5rem";
+      input.style.fontFamily = "monospace";
+      input.style.background = "black";
+      input.style.color = "white";
+      main.appendChild(input);
 
-    document.addEventListener("scroll", () => {
-      clearTimeout(idleTimer);
-      const now = window.scrollY;
-      if (Math.abs(now - lastScroll) > 100) {
-        log("스크롤 급가속 감지. 불안 반응 추정됨.");
-      } else {
-        log("천천히 스크롤 중. 침착한 상태 유지 중.");
-      }
-      lastScroll = now;
-      idleTimer = setTimeout(() => {
-        log("5초간 멈춤. 몰입 상태로 기록됩니다.");
-      }, 5000);
-    });
+      input.addEventListener("change", () => {
+        const name = input.value.trim();
+        main.innerHTML = "";
+        typeLine("...그래, " + name + ". 당신은 지금 누구의 시선 아래에 있는지 모르는군요.", () => {
+          typeLine("이제 선택하세요.", () => showChoices(name));
+        });
+      });
+    }
 
-    typeText(main, paragraphs);
+    function showChoices(name) {
+      const choice1 = document.createElement("button");
+      choice1.className = "choice-button";
+      choice1.textContent = "기록을 계속 읽는다";
+      choice1.onclick = () => {
+        main.innerHTML = "";
+        typeLine(name + ", 그렇게 쉽게 포기할 인물이 아니군요...", () => {
+          typeLine("문서가 점차 당신을 감지하기 시작합니다...", () => {
+            showFinal(name);
+          });
+        });
+      };
+
+      const choice2 = document.createElement("button");
+      choice2.className = "choice-button";
+      choice2.textContent = "기록을 닫고 떠난다";
+      choice2.onclick = () => {
+        main.innerHTML = "";
+        typeLine("현명한 선택일지도 모르겠습니다, " + name + ".", () => {
+          typeLine("...하지만 너무 늦었네요.", () => {
+            typeLine("문서는 이미 당신의 이름을 기록했습니다.");
+          });
+        });
+      };
+
+      main.appendChild(choice1);
+      main.appendChild(choice2);
+    }
+
+    function showFinal(name) {
+      setTimeout(() => {
+        typeLine("[비인가 열람자 " + name + "의 감정 반응 분석 중...]", () => {
+          typeLine("불쾌감: 42% / 몰입도: 78% / 이탈 가능성: 15%", () => {
+            typeLine("...분석 종료. 당신은 계속 이곳에 남을 것입니다.");
+          });
+        });
+      }, 2000);
+    }
+
+    // Start
+    startTyping();
   </script>
 </body>
 </html>
