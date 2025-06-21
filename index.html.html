@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>기록 문서: ███</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    .console {
+      border-top: 1px solid #444;
+      margin-top: 3rem;
+      padding-top: 1rem;
+      font-size: 0.9rem;
+    }
+    #log p {
+      margin: 0.8rem 0;
+    }
+    .typing {
+      border-right: 1px solid white;
+      animation: blink 0.8s infinite;
+    }
+    @keyframes blink {
+      0% {opacity: 1;}
+      50% {opacity: 0;}
+      100% {opacity: 1;}
+    }
+    input {
+      margin-top: 1rem;
+      padding: 0.4rem;
+      font-family: monospace;
+      background: #111;
+      color: white;
+      border: 1px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>기록 문서: ███ (관찰 전용)</h1>
+  <div id="mainText"></div>
+  <div class="console" id="console"></div>
+
+  <script>
+    const main = document.getElementById("mainText");
+    const consoleLog = document.getElementById("console");
+
+    const paragraphs = [
+      "열람 권한 없음. 접근 거부됨.",
+      "[Override: 사용자의 접속이 감지되었습니다]",
+      "그 문서, 열면 안 됩니다.",
+      "...이미 열었군요. 감시를 시작합니다.",
+      "당신의 시선, 손의 떨림, 스크롤 속도까지 기록 중...",
+      "이건 단순한 문서가 아닙니다. 오히려 — 거울에 가까워요.",
+      "당신은 나를 보고 있고, 나는 당신을 보고 있습니다.",
+      "왜 이 문서를 훔쳐보려 한 겁니까? 이유를 입력해보세요."
+    ];
+
+    function log(text) {
+      const p = document.createElement("p");
+      p.textContent = "console: " + text;
+      consoleLog.appendChild(p);
+      consoleLog.scrollTop = consoleLog.scrollHeight;
+    }
+
+    function typeText(element, textList, i = 0) {
+      if (i >= textList.length) return;
+      const p = document.createElement("p");
+      let index = 0;
+      function typeChar() {
+        if (index < textList[i].length) {
+          p.innerHTML += textList[i][index++] + '<span class="typing"></span>';
+          setTimeout(typeChar, 35);
+        } else {
+          p.innerHTML = textList[i];
+          setTimeout(() => typeText(element, textList, i + 1), 1000);
+        }
+      }
+      element.appendChild(p);
+      typeChar();
+    }
+
+    let userName = "";
+
+    setTimeout(() => {
+      const input = document.createElement("input");
+      input.placeholder = "이유를 입력하세요...";
+      input.onkeypress = (e) => {
+        if (e.key === "Enter") {
+          userName = input.value.trim() || "기록 침입자";
+          log(`"${userName}"… 이미 알고 있었습니다.`);
+          main.removeChild(input);
+          continueScript();
+        }
+      };
+      main.appendChild(input);
+    }, 13000);
+
+    function continueScript() {
+      setTimeout(() => log(userName + ", 당신은 지금도 읽고 있습니다."), 3000);
+      setTimeout(() => log("지금 멈추면, 이 기록은 당신 안에 남습니다."), 6000);
+      setTimeout(() => log("당신의 반응은 이미 예측되었습니다."), 9000);
+      setTimeout(() => {
+        const end = document.createElement("p");
+        end.innerHTML = `<strong>${userName}</strong>, 이 문서는 이제 당신의 일부입니다.`;
+        main.appendChild(end);
+      }, 12000);
+    }
+
+    let lastScroll = 0;
+    let idleTimer;
+
+    document.addEventListener("scroll", () => {
+      clearTimeout(idleTimer);
+      const now = window.scrollY;
+      if (Math.abs(now - lastScroll) > 100) {
+        log("스크롤 급가속 감지. 불안 반응 추정됨.");
+      } else {
+        log("천천히 스크롤 중. 침착한 상태 유지 중.");
+      }
+      lastScroll = now;
+      idleTimer = setTimeout(() => {
+        log("5초간 멈춤. 몰입 상태로 기록됩니다.");
+      }, 5000);
+    });
+
+    typeText(main, paragraphs);
+  </script>
+</body>
+</html>
