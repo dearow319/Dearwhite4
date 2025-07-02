@@ -1,0 +1,12 @@
+body {
+    color: white;
+    background-color: black;
+}
+
+#typewriter {
+    white-space: pre-wrap;
+    font-family: monospace;
+    padding: 10px;
+    line-height: 1.6;
+    display: inline-block;
+}
