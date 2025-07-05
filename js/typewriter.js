@@ -20,7 +20,7 @@ export function typeText(element, text, onComplete) {
         if (idx < safeText.length) {
             textNode.textContent += safeText.charAt(idx);
             idx++;
-            localTimeoutId = setTimeout(typeChar, 10);
+            localTimeoutId = setTimeout(typeChar, 80);
         } else {
             delete element._skipTyping;
             if (onComplete) onComplete();
